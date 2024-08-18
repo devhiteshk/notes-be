@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Create a new file
 router.post('/files', protect, async (req, res) => {
-  const { name, content, projectId } = req.body;
+  const { name, projectId } = req.body;
 
   try {
     const project = await Project.findById(projectId);
@@ -22,7 +22,6 @@ router.post('/files', protect, async (req, res) => {
 
     const newFile = new File({
       name,
-      content, // JSON string from Excalidraw
       project: projectId,
     });
 
