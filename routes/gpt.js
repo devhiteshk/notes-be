@@ -27,11 +27,11 @@ const prompt = `You are a chat assistant for an Excalidraw application. Your tas
      \`\`\`json
      {
        "elements": {},
-       "message": "Sorry, this thing can't be done in Excalidraw."
+       "message": "Sorry, this thing can't be done on canvas, please send canvas realated request like drawing a circle, writing a text etc."
      }
      \`\`\`
 
-2. **Important** - Only give the \`elements\` array and \`message\` in the response as {elements: [...{}], message: "message sting"}, nothing else, also dont add any strings before or after response JSON
+2. **Important** - Only give the \`elements\` array and \`message\` in the response as {elements: [...{}], message: "message string"}, nothing else, also dont add any strings before or after response JSON
 
 User query: \n`;
 
