@@ -76,7 +76,7 @@ router.put('/files/:id', protect, async (req, res) => {
 
     if (!file) {
       return res.status(404).json({ message: 'File not found' });
-    }    
+    }
 
     // Ensure the file's project belongs to the authenticated user
     if (file.project.user.toString() !== req.user._id.toString()) {
@@ -90,6 +90,23 @@ router.put('/files/:id', protect, async (req, res) => {
     const updatedFile = await file.save();
 
     res.status(200).json(updatedFile);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.delete('/deletefilebyFileId/:id', protect, async (req, res) => {
+  try {
+    const fileId = req.params.id;
+
+    const result = await File.deleteMany({ _id: fileId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'No files found with this projectId' });
+    }
+
+    res.status(200).json({ message: `${result.deletedCount} file(s) deleted successfully` });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
