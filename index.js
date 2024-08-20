@@ -33,7 +33,7 @@ app.use('/api/', apiLimiter);
 app.use('/auth/', apiLimiter);
 
 // Init Middleware
-app.use(cors({ origin: ['https://notes.codehoody.com/', 'http://localhost:5173'] }));
+app.use(cors({ origin: ['https://notes.codehoody.com', 'http://localhost:5173'] }));
 app.use(express.json());
 app.use(passport.initialize());
 
