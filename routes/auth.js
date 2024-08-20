@@ -16,11 +16,11 @@ router.post('/signup', async (req, res) => {
     user = new User({ firstName, lastName, email, password });
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    //   expiresIn: '1h',
+    // });
 
-    res.status(201).json({ token });
+    res.status(201).json({ message: "user created successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '168h',
+      expiresIn: '48h',
     });
 
     res.status(200).json({ token });
