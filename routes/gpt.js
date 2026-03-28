@@ -1,10 +1,15 @@
 const express = require('express');
-const axios = require('axios');
+const { Ollama } = require('ollama');
 const { protect } = require('../middlewares/auth');
-const Groq = require("groq-sdk");
-
 
 const router = express.Router();
+
+const ollama = new Ollama({
+    host: "https://ollama.com",
+    headers: {
+        Authorization: "Bearer " + process.env.OLLAMA_API_KEY,
+    },
+});
 
 const prompt = `You are a chat assistant for an Excalidraw application. Your task is to respond to user queries with JSON representing Excalidraw elements.
 
@@ -35,36 +40,22 @@ const prompt = `You are a chat assistant for an Excalidraw application. Your tas
 
 User query: \n`;
 
-
 router.post('/chat', protect, async (req, res) => {
     const userMessage = req.body.message;
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
     try {
-        async function getGroqChatCompletion() {
-            return groq.chat.completions.create({
-                messages: [
-                    {
-                        role: "user",
-                        content: prompt + userMessage + "using excalidraw elements",
-                    },
-                ],
-                model: "llama3-8b-8192",
-            });
-        }
+        const response = await ollama.chat({
+            model: "gpt-oss:120b",
+            messages: [{ role: "user", content: prompt + userMessage + "using excalidraw elements" }],
+            stream: false,
+        });
 
-        const chatCompletion = await getGroqChatCompletion();
-
-        const botMessage = chatCompletion.choices[0]?.message?.content || ""
+        const botMessage = response.message?.content || "";
         res.json({ response: botMessage });
 
     } catch (error) {
-        // Log the full error for debugging
-        console.error('Error communicating with OpenAI:', error.response ? error.response.data : error.message);
-
-        // Send a more detailed error message if available
-        const errorMessage = error.response && error.response.data ? error.response.data : 'Failed to communicate with ChatBot';
-        res.status(500).json({ error: errorMessage });
+        console.error('Error communicating with Ollama:', error.message);
+        res.status(500).json({ error: 'Failed to communicate with ChatBot' });
     }
 });
 
